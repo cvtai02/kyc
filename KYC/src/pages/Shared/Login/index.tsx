@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/routes';
+import Input from '@/components/input';
+import Button from '@/components/button';
 
 interface LoginFormData {
   email: string;
@@ -39,12 +41,9 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-center text-gray-800">Login to Your Account</h2>
         <form className="mt-6" onSubmit={handleSubmit((x) => mutate(x))}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-600 dark:text-gray-200 text-left">
-              Email
-            </label>
-            <input
+            <Input
+              label="Email"
               type="email"
-              id="email"
               {...register('email', {
                 required: 'Email is required',
                 pattern: {
@@ -52,21 +51,15 @@ export default function Login() {
                   message: 'Invalid email address',
                 },
               })}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              error={errors.email?.message}
               placeholder="Enter your email"
             />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-            )}
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-600 text-left">
-              Password
-            </label>
-            <input
+            <Input
+              label="Password"
               type="password"
-              id="password"
               {...register('password', {
                 required: 'Password is required',
                 minLength: {
@@ -74,12 +67,9 @@ export default function Login() {
                   message: 'Password must be at least 6 characters',
                 },
               })}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              error={errors.password?.message}
               placeholder="Enter your password"
             />
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-            )}
           </div>
 
           <div className="flex items-center justify-between mb-4">
@@ -96,12 +86,13 @@ export default function Login() {
             </a>
           </div>
 
-          <button
+          <Button
             type="submit"
-            disabled={isPending}
-            className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed">
-            {isPending ? 'Logging in...' : 'Login'}
-          </button>
+            fullWidth
+            isLoading={isPending}
+          >
+            Login
+          </Button>
         </form>
 
         <p className="mt-4 text-sm text-center text-gray-600">

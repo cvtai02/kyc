@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { login as loginApi} from './apis';
+import { login as loginApi } from './apis';
 import type { User } from './types';
 
 export const useAuthStore = create<AuthState>()(
