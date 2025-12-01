@@ -21,7 +21,7 @@ export const login = async (username: string, password: string): Promise<{ user:
 
   return {
     user,
-    token: data.token,
+    token: data.accessToken,
   };
 };
 
@@ -45,6 +45,6 @@ interface LoginResponse {
   lastName: string;
   gender: string;
   image: string;
-  token: string;
+  accessToken: string;
   refreshToken: string;
 }

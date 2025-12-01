@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '@/routes';
 import Input from '@/components/input';
 import Button from '@/components/button';
+import { toast } from 'react-toastify';
 
 interface LoginFormData {
   email: string;
@@ -26,7 +27,11 @@ export default function Login() {
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: LoginFormData) => {
       return login(data.email, data.password);
-    }
+    },
+    onSuccess: () => {
+      toast.success('Login successful!');
+      navigate('/');
+    },
   })
 
   // Redirect if already authenticated
@@ -43,16 +48,12 @@ export default function Login() {
           <div className="mb-4">
             <Input
               label="Email"
-              type="email"
               {...register('email', {
                 required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address',
-                },
               })}
               error={errors.email?.message}
               placeholder="Enter your email"
+              defaultValue="emilys"
             />
           </div>
 
@@ -69,6 +70,7 @@ export default function Login() {
               })}
               error={errors.password?.message}
               placeholder="Enter your password"
+              defaultValue="emilyspass"
             />
           </div>
 
