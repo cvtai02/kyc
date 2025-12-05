@@ -14,7 +14,7 @@ export const useAuthStore = create<AuthState>()(
       isHydrated: false,
 
       //refresh token if needed
-
+      
       login: async (username: string, password: string) => {
         set({ isLoading: true });
         try {
@@ -30,7 +30,7 @@ export const useAuthStore = create<AuthState>()(
           throw error;
         }
       },
-
+      
       logout: () => {
         set({
           user: null,

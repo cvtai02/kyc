@@ -7,6 +7,8 @@ import { ROUTES } from '@/routes';
 import Input from '@/components/input';
 import Button from '@/components/button';
 import { useEffect } from 'react';
+import Title from '@/components/title';
+import Logo from '@/components/logo';
 
 interface LoginFormData {
   username: string;
@@ -41,48 +43,53 @@ export default function Login() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div className="bg-muted flex gap-10 flex-col items-center justify-center min-h-screen">
+      <Logo size='lg' text="Simple KYC Authentication" />
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <form onSubmit={handleSubmit((x) => mutate(x))}>
-          <h2 className="text-2xl font-bold mb-6 text-left text-gray-800">Login to Your Account</h2>
+          <Title text="Sign in to platform" variant="large"  />
           <div className="mb-4">
             <Input
-              label="Username (min 6 - max 10 chars)"
+              label="Username"
               {...register('username', {
                 required: 'Username is required',
                 minLength: {
-                  value: 6,
-                  message: 'Username must be between 6 and 10 characters',
+                  value: 8,
+                  message: 'Username must be between 8 and 10 characters',
                 },
                 maxLength: {
                   value: 10,
-                  message: 'Username must be between 6 and 10 characters',
+                  message: 'Username must be between 8 and 10 characters',
                 },
               })}
               error={errors.username?.message}
               placeholder="Enter your username"
-              defaultValue="emilys"
+              defaultValue="michaelw"
             />
           </div>
 
           <div className="mb-4">
             <Input
-              label="Password (min 10 - max 16 chars)"
+              label="Password"
               type="password"
               {...register('password', {
                 required: 'Password is required',
                 minLength: {
-                  value: 10,
-                  message: 'Password must be between 10 and 16 characters',
+                  value: 12,
+                  message: 'Password must be between 12 and 16 characters',
                 },
                 maxLength: {
                   value: 16,
-                  message: 'Password must be between 10 and 16 characters',
+                  message: 'Password must be between 12 and 16 characters',
+                },
+                pattern: {
+                  value: /^[A-Za-z0-9@#&!]+$/,
+                  message: 'Password only accepts letters, numbers, and these special characters (@, #, &, !)',
                 },
               })}
               error={errors.password?.message}
               placeholder="Enter your password"
-              defaultValue="emilyspass"
+              defaultValue="michaelwpass"
             />
           </div>
 
@@ -95,8 +102,8 @@ export default function Login() {
               />
               <span className="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
-            <a href="#" className="text-sm text-blue-600 hover:underline">
-              Forgot password?
+            <a href="#" className="text-sm text-link hover:underline">
+              Lost password?
             </a>
           </div>
 
@@ -111,7 +118,7 @@ export default function Login() {
 
         <p className="mt-4 text-sm text-center text-gray-600">
           Don't have an account? {' '}
-          <Link to={ROUTES.signup} className="text-blue-600 hover:underline">Sign up</Link>
+          <Link to={ROUTES.signup} className="text-link hover:underline">Sign up</Link>
         </p>
       </div>
     </div>

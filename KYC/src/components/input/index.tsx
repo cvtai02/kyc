@@ -23,7 +23,7 @@ const Input = ({ label, error, className = '', id, ref, ...props }: InputProps) 
       <input
         ref={ref}
         id={inputId}
-        className={`${widthStyle} px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${error ? 'border-red-500 focus:ring-red-500' : ''
+        className={`${widthStyle} px-4 py-2.5 border bg-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring-focus focus:border-transparent ${error ? 'border-red-500 focus:ring-red-500' : ''
           } ${className}`}
         {...props}
       />

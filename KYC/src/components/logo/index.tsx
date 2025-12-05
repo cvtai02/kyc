@@ -1,14 +1,14 @@
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
-  withText?: boolean;
+  text?: string;
   className?: string;
 }
 
-export default function Logo({ size = 'md', withText = false, className = '' }: LogoProps) {
+export default function Logo({ size = 'md', text = '', className = '' }: LogoProps) {
   const sizeClasses = {
     sm: 'h-8 w-8',
     md: 'h-12 w-12',
-    lg: 'h-16 w-16',
+    lg: 'h-20 w-20',
   };
 
   return (
@@ -18,9 +18,9 @@ export default function Logo({ size = 'md', withText = false, className = '' }: 
         alt="Logo" 
         className={sizeClasses[size]}
       />
-      {withText && (
-        <h1 className={`font-semibold text-gray-900 ml-2 ${size === 'sm' ? 'text-xl' : size === 'md' ? 'text-2xl' : 'text-3xl'}`}>
-          Simple KYC
+      {text && (
+        <h1 className={`font-semibold ml-2 ${size === 'sm' ? 'text-xl' : size === 'md' ? 'text-2xl' : 'text-3xl'}`}>
+          {text}
         </h1>
       )}
     </div>
