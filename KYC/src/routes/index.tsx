@@ -4,19 +4,22 @@ import { PrivateRoute } from "@/routes/PrivateRoute";
 import Login from "@/pages/Shared/Login";
 import Home from "@/pages/Shared/Home";
 import NotFound from "@/pages/system/NotFound";
+import Layout from "@/pages/Shared/Layout";
 
 //ABSOLUTE ROUTES can be used for redirects outside React components
 export const ROUTES = {
+  base: '/',
+  user: '',
+  officer: '/officer',
   login: '/login',
   signup: '/signup',
-  home: '/',
 }
 
-const AppRoutes: ReactNode = 
+const AppRoutes: ReactNode =
   <Route>
     <Route element={<PrivateRoute />}>
-      <Route path={ROUTES.home} >
-        <Route index element={<Home />} />
+      <Route path={ROUTES.base} element={<Layout />}>
+        <Route path={ROUTES.user} index element={<Home />} />
       </Route>
     </Route>
 

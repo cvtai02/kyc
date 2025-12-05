@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom';
-import {  useAuthStore } from '@/hooks/useAuth';
+import { useAuthStore } from '@/hooks/useAuthStore';
+import Logo from '@/components/logo';
+import Button from '@/components/button';
 
 export default function Layout() {
   const { user, logout } = useAuthStore();
@@ -10,18 +12,15 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold">KYC App</h1>
+              <Logo withText={true} />
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-700">
-                Welcome, {user?.name || 'User'}
+              <span >
+                {user?.name || 'User'}
               </span>
-              <button
-                onClick={logout}
-                className="px-4 py-2 text-sm text-white bg-red-600 rounded-md hover:bg-red-700"
-              >
+              <Button variant="secondary" onClick={logout}>
                 Logout
-              </button>
+              </Button>
             </div>
           </div>
         </div>

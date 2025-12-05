@@ -1,15 +1,15 @@
 import { useForm } from 'react-hook-form';
-import useAuth from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/routes';
 import Input from '@/components/input';
 import Button from '@/components/button';
-import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 interface LoginFormData {
-  email: string;
+  username: string;
   password: string;
   rememberMe: boolean;
 }
@@ -26,46 +26,58 @@ export default function Login() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: LoginFormData) => {
-      return login(data.email, data.password);
+      //TODO: handle remember me
+      return login(data.username, data.password);
     },
     onSuccess: () => {
-      toast.success('Login successful!');
       navigate('/');
     },
   })
 
-  // Redirect if already authenticated
-  if (isAuthenticated()) {
-    navigate('/');
-    return null;
-  }
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="bg-gray-100 flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-800">Login to Your Account</h2>
-        <form className="mt-6" onSubmit={handleSubmit((x) => mutate(x))}>
+        <form onSubmit={handleSubmit((x) => mutate(x))}>
+          <h2 className="text-2xl font-bold mb-6 text-left text-gray-800">Login to Your Account</h2>
           <div className="mb-4">
             <Input
-              label="Email"
-              {...register('email', {
-                required: 'Email is required',
+              label="Username (min 6 - max 10 chars)"
+              {...register('username', {
+                required: 'Username is required',
+                minLength: {
+                  value: 6,
+                  message: 'Username must be between 6 and 10 characters',
+                },
+                maxLength: {
+                  value: 10,
+                  message: 'Username must be between 6 and 10 characters',
+                },
               })}
-              error={errors.email?.message}
-              placeholder="Enter your email"
+              error={errors.username?.message}
+              placeholder="Enter your username"
               defaultValue="emilys"
             />
           </div>
 
           <div className="mb-4">
             <Input
-              label="Password"
+              label="Password (min 10 - max 16 chars)"
               type="password"
               {...register('password', {
                 required: 'Password is required',
                 minLength: {
-                  value: 6,
-                  message: 'Password must be at least 6 characters',
+                  value: 10,
+                  message: 'Password must be between 10 and 16 characters',
+                },
+                maxLength: {
+                  value: 16,
+                  message: 'Password must be between 10 and 16 characters',
                 },
               })}
               error={errors.password?.message}
@@ -90,10 +102,10 @@ export default function Login() {
 
           <Button
             type="submit"
-            fullWidth
+            className="ml-0"
             isLoading={isPending}
           >
-            Login
+            Login to Your Account
           </Button>
         </form>
 

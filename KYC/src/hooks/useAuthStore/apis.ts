@@ -1,5 +1,5 @@
 import type { User } from './types';
-import { API_BASE_URL } from '../../base/constants';
+import { API_BASE_URL, TOKEN_EXPIRE_THRESHOLD_MINS } from '../../base/constants';
 import { appFetch } from '@/base/appFetch';
 
 export const login = async (username: string, password: string): Promise<{ user: User; token: string }> => {
@@ -8,7 +8,7 @@ export const login = async (username: string, password: string): Promise<{ user:
     body: JSON.stringify({
       username,
       password,
-      expiresInMins: 10,
+      expiresInMins: TOKEN_EXPIRE_THRESHOLD_MINS,
     }),
   });
 
