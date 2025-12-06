@@ -24,7 +24,6 @@ export default function Button({
 
 
   return (
-    <div className="w-full">
       <button
         className={`${baseStyles} ${variantStyles[variant]} ${className}`}
         disabled={disabled || isLoading}
@@ -32,6 +31,5 @@ export default function Button({
       >
         {isLoading ? 'Loading...' : children}
       </button>
-    </div>
   );
 }

@@ -5,6 +5,8 @@ import { IoIosNotifications } from 'react-icons/io';
 import { RiCustomerServiceFill, RiFunctionFill } from 'react-icons/ri';
 import { IoMoonSharp, IoSettings } from 'react-icons/io5';
 import { useState } from 'react';
+import { MdNotificationAdd } from 'react-icons/md';
+import { FaClipboardList } from 'react-icons/fa';
 
 export default function Layout() {
   const {  logout } = useAuthStore();
@@ -94,6 +96,33 @@ export default function Layout() {
               <RiCustomerServiceFill  size={20} />
               <span className="font-medium">KYC</span>
             </Link>
+
+            {
+              user?.role !== 'user' && (
+                <>  
+                <Link 
+                  to="officer/preview"
+                  className={`flex items-center gap-3 px-6 py-3 text-secondary hover:bg-blue-50 hover:text-highlight transition-colors ${
+                    isActive('/dashboard') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
+                  }`}
+                >
+                  <MdNotificationAdd   size={20} />
+                  <span className="font-medium">Officer Panel</span>
+                </Link>
+
+                <Link 
+                  to="officer/results"
+                  className={`flex items-center gap-3 px-6 py-3 text-secondary hover:bg-blue-50 hover:text-highlight transition-colors ${
+                    isActive('/dashboard') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
+                  }`}
+                >
+                  <FaClipboardList   size={20} />
+                  <span className="font-medium">Reviewed Results</span>
+                </Link>
+                
+                </>
+              )
+            }
          
           </nav>
         </aside>

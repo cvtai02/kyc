@@ -3,10 +3,10 @@
   text-align: center;
 }
 
-/* dont know why the checkbox bg is black in light mode*/
+/* dont know why the checkbox bg is black in light mode
 input[type="checkbox"] {
   color-scheme: light;
 }
 html.dark input[type="checkbox"] {
   color-scheme: dark;
-}
+} */

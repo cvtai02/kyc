@@ -37,6 +37,9 @@ export const useAuthStore = create<AuthState>()(
           user: null,
         });
       },
+      setUser: (user: User | null) => {
+        set({ user });
+      },
       isAuthenticated: (needToast = false) => {
         const token = get().user?.accessToken;
         console.log('Checking authentication with token:', token);
@@ -71,6 +74,7 @@ interface AuthState {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  setUser: (user: User | null) => void;
   isAuthenticated: (needToast?: boolean) => boolean;
 }
 

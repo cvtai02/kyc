@@ -1,4 +1,4 @@
-import Loader from "@/components/loader/input";
+import Loader from "@/components/loader";
 import { lazy, Suspense, type ComponentType } from "react";
 
 export function appLazy(importFunc: () => Promise<{ default: ComponentType<any> }>) {

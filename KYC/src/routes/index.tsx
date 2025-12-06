@@ -10,17 +10,19 @@ const NotFound = appLazy(() => import("@/pages/shared/systems/NotFound"));
 const Layout = appLazy(() => import("@/pages/shared/layout"));
 const Profile = appLazy(() => import("@/pages/shared/profile"));
 const KYC = appLazy(() => import("@/pages/shared/kyc"));
+const PreviewPage = appLazy(() => import("@/pages/officer/preview"));
+const ResultsPage = appLazy(() => import("@/pages/officer/results"));
 
 
 //ABSOLUTE ROUTES can be used for redirects outside React components
 export const ROUTES = {
   base: '/',
   user: '',
-  officer: '/officer',
   login: '/login',
   signup: '/signup',
   profile: '/profile',
   kyc: '/kyc',
+  officer: '/officer',
 }
 
 const AppRoutes: ReactNode =
@@ -32,6 +34,10 @@ const AppRoutes: ReactNode =
         <Route path={ROUTES.profile} element={<Profile />} />
         <Route path={ROUTES.user} index element={<Home />} />
         <Route path={ROUTES.kyc} element={<KYC />} />
+        <Route path={ROUTES.officer} element={<PrivateRoute requiredRoles={['admin', 'moderator']} />}>
+          <Route path="preview" element={< PreviewPage/>} />
+          <Route path="results" element={< ResultsPage/>} />
+        </Route>
       </Route>
     </Route>
 

@@ -1,541 +1,571 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuthStore } from '../../../hooks/useAuthStore';
-import Card from '../../../components/card';
-import Button from '../../../components/button';
-import Input from '../../../components/input';
-import Select from '../../../components/select';
+import { useKYCStore } from './store';
+import Card from '@/components/card';
+import Title from '@/components/title';
+import InfoField from '@/components/infoField';
+import { FiEdit, FiPlus } from 'react-icons/fi';
+import type { User } from '../../../types/user';
+import type { Income, Asset, Liability, SourceOfWealth, InvestmentExperience } from './types';
+import {
+  // TODO: lazy load these modals
+  AddIncomeModal,
+  EditIncomeModal,
+  AddAssetModal,
+  EditAssetModal,
+  AddLiabilityModal,
+  EditLiabilityModal,
+  AddSourceOfWealthModal,
+  EditSourceOfWealthModal,
+  EditInvestmentExperienceModal,
+} from './components';
 
-interface Income {
-  type: 'Salary' | 'Investment' | 'Others';
-  amount: number;
-  currency: string;
+// Component Interfaces
+interface PersonalInformationCardProps {
+  data: User;
 }
 
-interface Asset {
-  type: 'Bond' | 'Liquidity' | 'Real Estate' | 'Others';
-  amount: number;
-  currency: string;
-}
-
-interface Liability {
-  type: 'Personal Loan' | 'Real Estate Loan' | 'Others';
-  amount: number;
-  currency: string;
-}
-
-interface SourceOfWealth {
-  type: 'Inheritance' | 'Donation';
-  amount: number;
-  currency: string;
-}
-
-interface PersonalInformation {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  dateOfBirth: string;
-  age: number;
-}
-
-interface FinancialStatus {
+interface IncomesCardProps {
   incomes: Income[];
-  assets: Asset[];
-  liabilities: Liability[];
-  sourcesOfWealth: SourceOfWealth[];
-  investmentExperience: '' | '<5' | '5-10' | '>10';
-  riskTolerance: '' | '10' | '30' | '100';
+  isReadOnly: boolean;
+  onEdit?: (index: number) => void;
+  onAdd?: () => void;
 }
 
-interface KYCData {
-  personalInformation: PersonalInformation;
-  financialStatus: FinancialStatus;
+interface AssetsCardProps {
+  assets: Asset[];
+  isReadOnly: boolean;
+  onEdit?: (index: number) => void;
+  onAdd?: () => void;
+}
+
+interface LiabilitiesCardProps {
+  liabilities: Liability[];
+  isReadOnly: boolean;
+  onEdit?: (index: number) => void;
+  onAdd?: () => void;
+}
+
+interface SourceOfWealthCardProps {
+  sourceOfWealth: SourceOfWealth[];
+  isReadOnly: boolean;
+  onEdit?: (index: number) => void;
+  onAdd?: () => void;
+}
+
+interface NetWorthCardProps {
+  netWorth: number;
+  currency: string;
+}
+
+interface InvestmentExperienceCardProps {
+  investmentExperience: InvestmentExperience;
+  isReadOnly: boolean;
+  onEdit?: () => void;
+}
+
+// Card Components
+function PersonalInformationCard({ data }: PersonalInformationCardProps) {
+  return (
+    <Card>
+      <div className="flex justify-between items-center mb-4">
+        <Title text="Personal Information" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InfoField label="First Name" value={data.firstName} />
+        <InfoField label="Middle Name" value={data.maidenName} />
+        <InfoField label="Last Name" value={data.lastName} />
+        <InfoField label="Date of Birth" value={data.birthDate} />
+        <InfoField label="Age" value={data.age} />
+        <InfoField label="Gender" value={data.gender} />
+      </div>
+    </Card>
+  );
+}
+
+function IncomesCard({ incomes, isReadOnly, onEdit, onAdd }: IncomesCardProps) {
+  return (
+    <Card>
+      <div className="flex justify-between items-center mb-4">
+        <Title text="Incomes (A)" />
+        {!isReadOnly && onAdd && (
+          <button
+            onClick={onAdd}
+            className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
+            aria-label="Add income"
+          >
+            <FiPlus size={20} />
+          </button>
+        )}
+      </div>
+      <div className="space-y-4">
+        {incomes.length === 0 ? (
+          <p className="text-gray-500 text-sm">No income information added</p>
+        ) : (
+          incomes.map((income, index) => (
+            <div key={index}>
+              {index > 0 && <div className="border-t border-gray-200 my-4" />}
+              <div className="flex justify-between items-start">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InfoField label="Type" value={income.type} />
+                  <InfoField label="Amount (USD)" value={income.amount.toLocaleString()} />
+                </div>
+                {!isReadOnly && onEdit && (
+                  <button
+                    onClick={() => onEdit(index)}
+                    className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors ml-2"
+                    aria-label="Edit income"
+                  >
+                    <FiEdit size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </Card>
+  );
+}
+
+function AssetsCard({ assets, isReadOnly, onEdit, onAdd }: AssetsCardProps) {
+  return (
+    <Card>
+      <div className="flex justify-between items-center mb-4">
+        <Title text="Assets (B)" />
+        {!isReadOnly && onAdd && (
+          <button
+            onClick={onAdd}
+            className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
+            aria-label="Add asset"
+          >
+            <FiPlus size={20} />
+          </button>
+        )}
+      </div>
+      <div className="space-y-4">
+        {assets.length === 0 ? (
+          <p className="text-gray-500 text-sm">No asset information added</p>
+        ) : (
+          assets.map((asset, index) => (
+            <div key={index}>
+              {index > 0 && <div className="border-t border-gray-200 my-4" />}
+              <div className="flex justify-between items-start">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InfoField label="Type" value={asset.type} />
+                  <InfoField label="Amount (USD)" value={asset.amount.toLocaleString()} />
+                </div>
+                {!isReadOnly && onEdit && (
+                  <button
+                    onClick={() => onEdit(index)}
+                    className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors ml-2"
+                    aria-label="Edit asset"
+                  >
+                    <FiEdit size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </Card>
+  );
+}
+
+function LiabilitiesCard({ liabilities, isReadOnly, onEdit, onAdd }: LiabilitiesCardProps) {
+  return (
+    <Card>
+      <div className="flex justify-between items-center mb-4">
+        <Title text="Liabilities (C)" />
+        {!isReadOnly && onAdd && (
+          <button
+            onClick={onAdd}
+            className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
+            aria-label="Add liability"
+          >
+            <FiPlus size={20} />
+          </button>
+        )}
+      </div>
+      <div className="space-y-4">
+        {liabilities.length === 0 ? (
+          <p className="text-gray-500 text-sm">No liability information added</p>
+        ) : (
+          liabilities.map((liability, index) => (
+            <div key={index}>
+              {index > 0 && <div className="border-t border-gray-200 my-4" />}
+              <div className="flex justify-between items-start">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InfoField label="Type" value={liability.type} />
+                  <InfoField label="Amount (USD)" value={liability.amount.toLocaleString()} />
+                </div>
+                {!isReadOnly && onEdit && (
+                  <button
+                    onClick={() => onEdit(index)}
+                    className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors ml-2"
+                    aria-label="Edit liability"
+                  >
+                    <FiEdit size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </Card>
+  );
+}
+
+function SourceOfWealthCard({ sourceOfWealth, isReadOnly, onEdit, onAdd }: SourceOfWealthCardProps) {
+  return (
+    <Card>
+      <div className="flex justify-between items-center mb-4">
+        <Title text="Source of Wealth (D)" />
+        {!isReadOnly && onAdd && (
+          <button
+            onClick={onAdd}
+            className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
+            aria-label="Add source of wealth"
+          >
+            <FiPlus size={20} />
+          </button>
+        )}
+      </div>
+      <div className="space-y-4">
+        {sourceOfWealth.length === 0 ? (
+          <p className="text-gray-500 text-sm">No source of wealth information added</p>
+        ) : (
+          sourceOfWealth.map((source, index) => (
+            <div key={index}>
+              {index > 0 && <div className="border-t border-gray-200 my-4" />}
+              <div className="flex justify-between items-start">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InfoField label="Type" value={source.type} />
+                  <InfoField label="Amount (USD)" value={source.amount.toLocaleString()} />
+                </div>
+                {!isReadOnly && onEdit && (
+                  <button
+                    onClick={() => onEdit(index)}
+                    className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors ml-2"
+                    aria-label="Edit source of wealth"
+                  >
+                    <FiEdit size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </Card>
+  );
+}
+
+function NetWorthCard({ netWorth, currency }: NetWorthCardProps) {
+  return (
+    <Card>
+      <div className="flex justify-between items-center mb-4">
+        <Title text="Net Worth" />
+      </div>
+      <div className="grid grid-cols-1 gap-4">
+        <div className="p-4 bg-blue-50 rounded-lg">
+          <p className="text-3xl font-bold text-blue-600">
+            {netWorth.toLocaleString()} {currency}
+          </p>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function InvestmentExperienceCard({ investmentExperience, isReadOnly, onEdit }: InvestmentExperienceCardProps) {
+  return (
+    <Card>
+      <div className="flex justify-between items-center mb-4">
+        <Title text="Investment Experience and Objectives" />
+        {!isReadOnly && onEdit && (
+          <button
+            onClick={onEdit}
+            className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+            aria-label="Edit investment experience"
+          >
+            <FiEdit size={20} />
+          </button>
+        )}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InfoField label="Experience in Financial Markets" value={investmentExperience.experienceInFinancialMarkets} />
+        <InfoField label="Risk Tolerance" value={investmentExperience.riskTolerance} />
+      </div>
+    </Card>
+  );
 }
 
 export default function KYC() {
   const { user } = useAuthStore();
-  const isOfficer = user?.role !== 'user';
-  const [isEditMode, setIsEditMode] = useState(false);
+  const {
+    incomes,
+    assets,
+    liabilities,
+    sourceOfWealth,
+    investmentExperience,
+    addIncome,
+    updateIncome,
+    addAsset,
+    updateAsset,
+    addLiability,
+    updateLiability,
+    addSourceOfWealth,
+    updateSourceOfWealth,
+    updateInvestmentExperience,
+    getNetWorth,
+  } = useKYCStore();
 
-  const [kycData, setKYCData] = useState<KYCData>({
-    personalInformation: {
-      firstName: user?.firstName || '',
-      middleName: user?.maidenName || '',
-      lastName: user?.lastName || '',
-      dateOfBirth: user?.birthDate || '',
-      age: user?.age || 0,
-    },
-    financialStatus: {
-      incomes: [{ type: 'Salary', amount: 0, currency: 'USD' }],
-      assets: [{ type: 'Bond', amount: 0, currency: 'USD' }],
-      liabilities: [{ type: 'Personal Loan', amount: 0, currency: 'USD' }],
-      sourcesOfWealth: [{ type: 'Inheritance', amount: 0, currency: 'USD' }],
-      investmentExperience: '',
-      riskTolerance: '',
-    },
-  });
+  const isUser = user?.role === 'user';
 
-  // Update personal information when user data changes
-  useEffect(() => {
-    if (user) {
-      setKYCData(prev => ({
-        ...prev,
-        personalInformation: {
-          firstName: user.firstName || '',
-          middleName: user.maidenName || '',
-          lastName: user.lastName || '',
-          dateOfBirth: user.birthDate || '',
-          age: user.age || 0,
-        },
-      }));
-    }
-  }, [user]);
+  // Modal states for adding
+  const [isAddIncomeModalOpen, setIsAddIncomeModalOpen] = useState(false);
+  const [isAddAssetModalOpen, setIsAddAssetModalOpen] = useState(false);
+  const [isAddLiabilityModalOpen, setIsAddLiabilityModalOpen] = useState(false);
+  const [isAddSourceOfWealthModalOpen, setIsAddSourceOfWealthModalOpen] = useState(false);
 
-  // Calculate age from date of birth
-  const calculateAge = (dob: string): number => {
-    if (!dob) return 0;
-    const [day, month, year] = dob.split('/').map(Number);
-    const birthDate = new Date(year, month - 1, day);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
+  // Modal states for editing
+  const [isEditIncomeModalOpen, setIsEditIncomeModalOpen] = useState(false);
+  const [isEditAssetModalOpen, setIsEditAssetModalOpen] = useState(false);
+  const [isEditLiabilityModalOpen, setIsEditLiabilityModalOpen] = useState(false);
+  const [isEditSourceOfWealthModalOpen, setIsEditSourceOfWealthModalOpen] = useState(false);
+  const [isEditInvestmentExperienceModalOpen, setIsEditInvestmentExperienceModalOpen] = useState(false);
+
+  // Selected item index for editing
+  const [selectedIncomeIndex, setSelectedIncomeIndex] = useState<number>(0);
+  const [selectedAssetIndex, setSelectedAssetIndex] = useState<number>(0);
+  const [selectedLiabilityIndex, setSelectedLiabilityIndex] = useState<number>(0);
+  const [selectedSourceOfWealthIndex, setSelectedSourceOfWealthIndex] = useState<number>(0);
 
   // Calculate net worth
-  const calculateNetWorth = (): number => {
-    const totalIncomes = kycData.financialStatus.incomes.reduce((sum, item) => sum + (item.amount || 0), 0);
-    const totalAssets = kycData.financialStatus.assets.reduce((sum, item) => sum + (item.amount || 0), 0);
-    const totalLiabilities = kycData.financialStatus.liabilities.reduce((sum, item) => sum + (item.amount || 0), 0);
-    const totalSourcesOfWealth = kycData.financialStatus.sourcesOfWealth.reduce((sum, item) => sum + (item.amount || 0), 0);
-    
-    return totalIncomes + totalAssets + totalLiabilities + totalSourcesOfWealth;
+  const netWorth = getNetWorth();
+
+  // Add handlers
+  const handleAddIncome = () => {
+    setIsAddIncomeModalOpen(true);
   };
 
-  const handlePersonalInfoChange = (field: keyof PersonalInformation, value: string | number) => {
-    setKYCData(prev => ({
-      ...prev,
-      personalInformation: {
-        ...prev.personalInformation,
-        [field]: value,
-      },
-    }));
-
-    // Update age when date of birth changes
-    if (field === 'dateOfBirth' && typeof value === 'string') {
-      const age = calculateAge(value);
-      setKYCData(prev => ({
-        ...prev,
-        personalInformation: {
-          ...prev.personalInformation,
-          age,
-        },
-      }));
-    }
+  const handleAddAsset = () => {
+    setIsAddAssetModalOpen(true);
   };
 
-  const handleFinancialChange = (field: keyof FinancialStatus, value: any) => {
-    setKYCData(prev => ({
-      ...prev,
-      financialStatus: {
-        ...prev.financialStatus,
-        [field]: value,
-      },
-    }));
+  const handleAddLiability = () => {
+    setIsAddLiabilityModalOpen(true);
   };
 
-  // Income handlers
-  const addIncome = () => {
-    handleFinancialChange('incomes', [
-      ...kycData.financialStatus.incomes,
-      { type: 'Salary', amount: 0, currency: 'USD' },
-    ]);
+  const handleAddSourceOfWealth = () => {
+    setIsAddSourceOfWealthModalOpen(true);
   };
 
-  const updateIncome = (index: number, field: keyof Income, value: string | number) => {
-    const newIncomes = [...kycData.financialStatus.incomes];
-    newIncomes[index] = { ...newIncomes[index], [field]: value };
-    handleFinancialChange('incomes', newIncomes);
+  // Edit handlers
+  const handleEditIncome = (index: number) => {
+    setSelectedIncomeIndex(index);
+    setIsEditIncomeModalOpen(true);
   };
 
-  const removeIncome = (index: number) => {
-    handleFinancialChange('incomes', kycData.financialStatus.incomes.filter((_, i) => i !== index));
+  const handleEditAsset = (index: number) => {
+    setSelectedAssetIndex(index);
+    setIsEditAssetModalOpen(true);
   };
 
-  // Asset handlers
-  const addAsset = () => {
-    handleFinancialChange('assets', [
-      ...kycData.financialStatus.assets,
-      { type: 'Bond', amount: 0, currency: 'USD' },
-    ]);
+  const handleEditLiability = (index: number) => {
+    setSelectedLiabilityIndex(index);
+    setIsEditLiabilityModalOpen(true);
   };
 
-  const updateAsset = (index: number, field: keyof Asset, value: string | number) => {
-    const newAssets = [...kycData.financialStatus.assets];
-    newAssets[index] = { ...newAssets[index], [field]: value };
-    handleFinancialChange('assets', newAssets);
+  const handleEditSourceOfWealth = (index: number) => {
+    setSelectedSourceOfWealthIndex(index);
+    setIsEditSourceOfWealthModalOpen(true);
   };
 
-  const removeAsset = (index: number) => {
-    handleFinancialChange('assets', kycData.financialStatus.assets.filter((_, i) => i !== index));
+  const handleEditInvestmentExperience = () => {
+    setIsEditInvestmentExperienceModalOpen(true);
   };
 
-  // Liability handlers
-  const addLiability = () => {
-    handleFinancialChange('liabilities', [
-      ...kycData.financialStatus.liabilities,
-      { type: 'Personal Loan', amount: 0, currency: 'USD' },
-    ]);
+  // Save handlers for adding
+  const handleAddNewIncome = (income: Income) => {
+    // TODO: Implement API call to add income
+    addIncome(income);
+    console.log('Adding income:', income);
   };
 
-  const updateLiability = (index: number, field: keyof Liability, value: string | number) => {
-    const newLiabilities = [...kycData.financialStatus.liabilities];
-    newLiabilities[index] = { ...newLiabilities[index], [field]: value };
-    handleFinancialChange('liabilities', newLiabilities);
+  const handleAddNewAsset = (asset: Asset) => {
+    // TODO: Implement API call to add asset
+    addAsset(asset);
+    console.log('Adding asset:', asset);
   };
 
-  const removeLiability = (index: number) => {
-    handleFinancialChange('liabilities', kycData.financialStatus.liabilities.filter((_, i) => i !== index));
+  const handleAddNewLiability = (liability: Liability) => {
+    // TODO: Implement API call to add liability
+    addLiability(liability);
+    console.log('Adding liability:', liability);
   };
 
-  // Source of Wealth handlers
-  const addSourceOfWealth = () => {
-    handleFinancialChange('sourcesOfWealth', [
-      ...kycData.financialStatus.sourcesOfWealth,
-      { type: 'Inheritance', amount: 0, currency: 'USD' },
-    ]);
+  const handleAddNewSourceOfWealth = (source: SourceOfWealth) => {
+    // TODO: Implement API call to add source of wealth
+    addSourceOfWealth(source);
+    console.log('Adding source of wealth:', source);
   };
 
-  const updateSourceOfWealth = (index: number, field: keyof SourceOfWealth, value: string | number) => {
-    const newSources = [...kycData.financialStatus.sourcesOfWealth];
-    newSources[index] = { ...newSources[index], [field]: value };
-    handleFinancialChange('sourcesOfWealth', newSources);
+  // Save handlers for editing
+  const handleSaveIncome = (income: Income) => {
+    updateIncome(selectedIncomeIndex, income);
+    console.log('Saving income:', income);
   };
 
-  const removeSourceOfWealth = (index: number) => {
-    handleFinancialChange('sourcesOfWealth', kycData.financialStatus.sourcesOfWealth.filter((_, i) => i !== index));
+  const handleSaveAsset = (asset: Asset) => {
+    updateAsset(selectedAssetIndex, asset);
+    console.log('Saving asset:', asset);
   };
 
-  const handleSave = () => {
-    // TODO: Implement save logic
-    console.log('Saving KYC data:', kycData);
-    setIsEditMode(false);
+  const handleSaveLiability = (liability: Liability) => {
+    updateLiability(selectedLiabilityIndex, liability);
+    console.log('Saving liability:', liability);
   };
 
-  const handleCancel = () => {
-    // TODO: Reset to original data
-    setIsEditMode(false);
+  const handleSaveSourceOfWealth = (source: SourceOfWealth) => {
+    updateSourceOfWealth(selectedSourceOfWealthIndex, source);
+    console.log('Saving source of wealth:', source);
   };
 
-  const isReadOnly = isOfficer || !isEditMode;
+  const handleSaveInvestmentExperience = (experience: InvestmentExperience) => {
+    // TODO: Implement API call to save investment experience
+    updateInvestmentExperience(experience);
+    console.log('Saving investment experience:', experience);
+  };
+
+  const isReadOnly = !isUser;
+
+  if (!user) {
+    return <div className="container mx-auto p-6 max-w-6xl">Loading...</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">KYC Information</h1>
-          {!isOfficer && (
-            <div className="flex gap-2">
-              {!isEditMode ? (
-                <Button onClick={() => setIsEditMode(true)}>Edit</Button>
-              ) : (
-                <>
-                  <Button onClick={handleSave}>Save</Button>
-                  <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+    <div className="container mx-auto p-6 max-w-6xl">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">KYC (Know Your Customer)</h1>
+      </div>
 
+      <div className="gap-4 flex flex-col">
         {/* Personal Information Section */}
-        <Card className="mb-6">
-          <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="First Name"
-              value={kycData.personalInformation.firstName}
-              onChange={(e) => handlePersonalInfoChange('firstName', e.target.value)}
-              disabled={isReadOnly}
-            />
-            <Input
-              label="Middle Name"
-              value={kycData.personalInformation.middleName}
-              onChange={(e) => handlePersonalInfoChange('middleName', e.target.value)}
-              disabled={isReadOnly}
-            />
-            <Input
-              label="Last Name"
-              value={kycData.personalInformation.lastName}
-              onChange={(e) => handlePersonalInfoChange('lastName', e.target.value)}
-              disabled={isReadOnly}
-            />
-            <Input
-              label="Date of Birth (DD/MM/YYYY)"
-              value={kycData.personalInformation.dateOfBirth}
-              onChange={(e) => handlePersonalInfoChange('dateOfBirth', e.target.value)}
-              placeholder="DD/MM/YYYY"
-              disabled={isReadOnly}
-            />
-            <Input
-              label="Age"
-              value={kycData.personalInformation.age}
-              disabled
-            />
-          </div>
-        </Card>
+        <PersonalInformationCard data={user} />
 
         {/* Financial Status Section */}
-        <Card className="mb-6">
-          <h2 className="text-xl font-semibold mb-4">Financial Status</h2>
+        <div className="mt-2">
+          <h2 className="text-2xl font-bold mb-4">Financial Status</h2>
 
           {/* Incomes */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-medium">Incomes (A)</h3>
-              {!isReadOnly && (
-                <Button variant="secondary" onClick={addIncome}>+ Add Income</Button>
-              )}
-            </div>
-            <div className="space-y-4">
-              {kycData.financialStatus.incomes.map((income, index) => (
-                <div key={index} className="p-4 bg-gray-50 rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Select
-                      label="Type"
-                      value={income.type}
-                      onChange={(e) => updateIncome(index, 'type', e.target.value as Income['type'])}
-                      options={[
-                        { value: 'Salary', label: 'Salary' },
-                        { value: 'Investment', label: 'Investment' },
-                        { value: 'Others', label: 'Others' },
-                      ]}
-                      disabled={isReadOnly}
-                    />
-                    <Input
-                      label="Amount"
-                      type="number"
-                      value={income.amount}
-                      onChange={(e) => updateIncome(index, 'amount', parseFloat(e.target.value) || 0)}
-                      disabled={isReadOnly}
-                    />
-                    <Input
-                      label="Currency"
-                      value={income.currency}
-                      onChange={(e) => updateIncome(index, 'currency', e.target.value)}
-                      disabled={isReadOnly}
-                    />
-                  </div>
-                  {!isReadOnly && kycData.financialStatus.incomes.length > 1 && (
-                    <Button
-                      variant="secondary"
-                      onClick={() => removeIncome(index)}
-                      className="mt-2 text-red-600 hover:text-red-700"
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
+          <div className="mb-4">
+            <IncomesCard
+              incomes={incomes}
+              isReadOnly={isReadOnly}
+              onEdit={handleEditIncome}
+              onAdd={handleAddIncome}
+            />
           </div>
 
           {/* Assets */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-medium">Assets (B)</h3>
-              {!isReadOnly && (
-                <Button variant="secondary" onClick={addAsset}>+ Add Asset</Button>
-              )}
-            </div>
-            <div className="space-y-4">
-              {kycData.financialStatus.assets.map((asset, index) => (
-                <div key={index} className="p-4 bg-gray-50 rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Select
-                      label="Type"
-                      value={asset.type}
-                      onChange={(e) => updateAsset(index, 'type', e.target.value as Asset['type'])}
-                      options={[
-                        { value: 'Bond', label: 'Bond' },
-                        { value: 'Liquidity', label: 'Liquidity' },
-                        { value: 'Real Estate', label: 'Real Estate' },
-                        { value: 'Others', label: 'Others' },
-                      ]}
-                      disabled={isReadOnly}
-                    />
-                    <Input
-                      label="Amount"
-                      type="number"
-                      value={asset.amount}
-                      onChange={(e) => updateAsset(index, 'amount', parseFloat(e.target.value) || 0)}
-                      disabled={isReadOnly}
-                    />
-                    <Input
-                      label="Currency"
-                      value={asset.currency}
-                      onChange={(e) => updateAsset(index, 'currency', e.target.value)}
-                      disabled={isReadOnly}
-                    />
-                  </div>
-                  {!isReadOnly && kycData.financialStatus.assets.length > 1 && (
-                    <Button
-                      variant="secondary"
-                      onClick={() => removeAsset(index)}
-                      className="mt-2 text-red-600 hover:text-red-700"
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
+          <div className="mb-4">
+            <AssetsCard
+              assets={assets}
+              isReadOnly={isReadOnly}
+              onEdit={handleEditAsset}
+              onAdd={handleAddAsset}
+            />
           </div>
 
           {/* Liabilities */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-medium">Liabilities (C)</h3>
-              {!isReadOnly && (
-                <Button variant="secondary" onClick={addLiability}>+ Add Liability</Button>
-              )}
-            </div>
-            <div className="space-y-4">
-              {kycData.financialStatus.liabilities.map((liability, index) => (
-                <div key={index} className="p-4 bg-gray-50 rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Select
-                      label="Type"
-                      value={liability.type}
-                      onChange={(e) => updateLiability(index, 'type', e.target.value as Liability['type'])}
-                      options={[
-                        { value: 'Personal Loan', label: 'Personal Loan' },
-                        { value: 'Real Estate Loan', label: 'Real Estate Loan' },
-                        { value: 'Others', label: 'Others' },
-                      ]}
-                      disabled={isReadOnly}
-                    />
-                    <Input
-                      label="Amount"
-                      type="number"
-                      value={liability.amount}
-                      onChange={(e) => updateLiability(index, 'amount', parseFloat(e.target.value) || 0)}
-                      disabled={isReadOnly}
-                    />
-                    <Input
-                      label="Currency"
-                      value={liability.currency}
-                      onChange={(e) => updateLiability(index, 'currency', e.target.value)}
-                      disabled={isReadOnly}
-                    />
-                  </div>
-                  {!isReadOnly && kycData.financialStatus.liabilities.length > 1 && (
-                    <Button
-                      variant="secondary"
-                      onClick={() => removeLiability(index)}
-                      className="mt-2 text-red-600 hover:text-red-700"
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
+          <div className="mb-4">
+            <LiabilitiesCard
+              liabilities={liabilities}
+              isReadOnly={isReadOnly}
+              onEdit={handleEditLiability}
+              onAdd={handleAddLiability}
+            />
           </div>
 
           {/* Source of Wealth */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-medium">Source of Wealth (D)</h3>
-              {!isReadOnly && (
-                <Button variant="secondary" onClick={addSourceOfWealth}>+ Add Source</Button>
-              )}
-            </div>
-            <div className="space-y-4">
-              {kycData.financialStatus.sourcesOfWealth.map((source, index) => (
-                <div key={index} className="p-4 bg-gray-50 rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Select
-                      label="Type"
-                      value={source.type}
-                      onChange={(e) => updateSourceOfWealth(index, 'type', e.target.value as SourceOfWealth['type'])}
-                      options={[
-                        { value: 'Inheritance', label: 'Inheritance' },
-                        { value: 'Donation', label: 'Donation' },
-                      ]}
-                      disabled={isReadOnly}
-                    />
-                    <Input
-                      label="Amount"
-                      type="number"
-                      value={source.amount}
-                      onChange={(e) => updateSourceOfWealth(index, 'amount', parseFloat(e.target.value) || 0)}
-                      disabled={isReadOnly}
-                    />
-                    <Input
-                      label="Currency"
-                      value={source.currency}
-                      onChange={(e) => updateSourceOfWealth(index, 'currency', e.target.value)}
-                      disabled={isReadOnly}
-                    />
-                  </div>
-                  {!isReadOnly && kycData.financialStatus.sourcesOfWealth.length > 1 && (
-                    <Button
-                      variant="secondary"
-                      onClick={() => removeSourceOfWealth(index)}
-                      className="mt-2 text-red-600 hover:text-red-700"
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
+          <div className="mb-4">
+            <SourceOfWealthCard
+              sourceOfWealth={sourceOfWealth}
+              isReadOnly={isReadOnly}
+              onEdit={handleEditSourceOfWealth}
+              onAdd={handleAddSourceOfWealth}
+            />
           </div>
 
           {/* Net Worth */}
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h3 className="text-lg font-medium mb-2">Client Net Worth</h3>
-            <p className="text-2xl font-bold text-blue-600">
-              ${calculateNetWorth().toLocaleString()}
-            </p>
-            <p className="text-sm text-gray-600 mt-1">
-              (A) + (B) + (C) + (D)
-            </p>
-          </div>
+          <NetWorthCard netWorth={netWorth} currency="USD" />
+        </div>
 
-          {/* Investment Experience and Objectives */}
-          <div className="mb-6">
-            <h3 className="text-lg font-medium mb-3">Investment Experience and Objectives</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Select
-                label="Experience in Financial Markets"
-                value={kycData.financialStatus.investmentExperience}
-                onChange={(e) => handleFinancialChange('investmentExperience', e.target.value)}
-                options={[
-                  { value: '<5', label: '< 5 years' },
-                  { value: '5-10', label: '> 5 and < 10 years' },
-                  { value: '>10', label: '> 10 years' },
-                ]}
-                disabled={isReadOnly}
-              />
-              <Select
-                label="Risk Tolerance"
-                value={kycData.financialStatus.riskTolerance}
-                onChange={(e) => handleFinancialChange('riskTolerance', e.target.value)}
-                options={[
-                  { value: '10', label: '10%' },
-                  { value: '30', label: '30%' },
-                  { value: '100', label: 'All-in' },
-                ]}
-                disabled={isReadOnly}
-              />
-            </div>
-          </div>
-        </Card>
+        {/* Investment Experience and Objectives */}
+        <InvestmentExperienceCard
+          investmentExperience={investmentExperience}
+          isReadOnly={isReadOnly}
+          onEdit={handleEditInvestmentExperience}
+        />
       </div>
+
+      {/* Add Modals */}
+      <AddIncomeModal
+        isOpen={isAddIncomeModalOpen}
+        onClose={() => setIsAddIncomeModalOpen(false)}
+        onAdd={handleAddNewIncome}
+      />
+      <AddAssetModal
+        isOpen={isAddAssetModalOpen}
+        onClose={() => setIsAddAssetModalOpen(false)}
+        onAdd={handleAddNewAsset}
+      />
+      <AddLiabilityModal
+        isOpen={isAddLiabilityModalOpen}
+        onClose={() => setIsAddLiabilityModalOpen(false)}
+        onAdd={handleAddNewLiability}
+      />
+      <AddSourceOfWealthModal
+        isOpen={isAddSourceOfWealthModalOpen}
+        onClose={() => setIsAddSourceOfWealthModalOpen(false)}
+        onAdd={handleAddNewSourceOfWealth}
+      />
+
+      {/* Edit Modals */}
+      <EditIncomeModal
+        isOpen={isEditIncomeModalOpen}
+        onClose={() => setIsEditIncomeModalOpen(false)}
+        income={incomes[selectedIncomeIndex] || { type: 'Salary', amount: 0, currency: 'USD' }}
+        onSave={handleSaveIncome}
+      />
+      <EditAssetModal
+        isOpen={isEditAssetModalOpen}
+        onClose={() => setIsEditAssetModalOpen(false)}
+        asset={assets[selectedAssetIndex] || { type: 'Bond', amount: 0, currency: 'USD' }}
+        onSave={handleSaveAsset}
+      />
+      <EditLiabilityModal
+        isOpen={isEditLiabilityModalOpen}
+        onClose={() => setIsEditLiabilityModalOpen(false)}
+        liability={liabilities[selectedLiabilityIndex] || { type: 'Personal Loan', amount: 0, currency: 'USD' }}
+        onSave={handleSaveLiability}
+      />
+      <EditSourceOfWealthModal
+        isOpen={isEditSourceOfWealthModalOpen}
+        onClose={() => setIsEditSourceOfWealthModalOpen(false)}
+        sourceOfWealth={sourceOfWealth[selectedSourceOfWealthIndex] || { type: 'Inheritance', amount: 0, currency: 'USD' }}
+        onSave={handleSaveSourceOfWealth}
+      />
+      <EditInvestmentExperienceModal
+        isOpen={isEditInvestmentExperienceModalOpen}
+        onClose={() => setIsEditInvestmentExperienceModalOpen(false)}
+        investmentExperience={investmentExperience}
+        onSave={handleSaveInvestmentExperience}
+      />
     </div>
   );
 }
