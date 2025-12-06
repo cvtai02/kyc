@@ -9,6 +9,7 @@ const Home = appLazy(() => import("@/pages/shared/Home"));
 const NotFound = appLazy(() => import("@/pages/shared/systems/NotFound"));
 const Layout = appLazy(() => import("@/pages/shared/layout"));
 const Profile = appLazy(() => import("@/pages/shared/profile"));
+const KYC = appLazy(() => import("@/pages/shared/kyc"));
 
 
 //ABSOLUTE ROUTES can be used for redirects outside React components
@@ -19,6 +20,7 @@ export const ROUTES = {
   login: '/login',
   signup: '/signup',
   profile: '/profile',
+  kyc: '/kyc',
 }
 
 const AppRoutes: ReactNode =
@@ -29,6 +31,7 @@ const AppRoutes: ReactNode =
       }>
         <Route path={ROUTES.profile} element={<Profile />} />
         <Route path={ROUTES.user} index element={<Home />} />
+        <Route path={ROUTES.kyc} element={<KYC />} />
       </Route>
     </Route>
 

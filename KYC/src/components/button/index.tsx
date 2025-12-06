@@ -4,7 +4,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   /** primary: blue, secondary: white button */
   variant?: 'primary' | 'secondary';
-  fullWidth?: boolean;
   isLoading?: boolean;
 }
 
@@ -25,12 +24,14 @@ export default function Button({
 
 
   return (
-    <button
-      className={`${baseStyles} ${variantStyles[variant]} ${className}`}
-      disabled={disabled || isLoading}
-      {...props}
-    >
-      {isLoading ? 'Loading...' : children}
-    </button>
+    <div className="w-full">
+      <button
+        className={`${baseStyles} ${variantStyles[variant]} ${className}`}
+        disabled={disabled || isLoading}
+        {...props}
+      >
+        {isLoading ? 'Loading...' : children}
+      </button>
+    </div>
   );
 }

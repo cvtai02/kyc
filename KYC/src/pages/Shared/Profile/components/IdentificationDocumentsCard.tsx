@@ -1,57 +1,36 @@
 import Card from '@/components/card';
 import Title from '@/components/title';
-import type { IdentificationDocuments } from '../types';
+import Input from '../../../../components/input';
 
 interface IdentificationDocumentsCardProps {
-  documents: IdentificationDocuments;
+  ssn: string;
+  ein: string;
   isReadOnly: boolean;
-  onFileChange: (field: 'id' | 'driverLicense', file: File | null) => void;
+  onUpdate: (field: string, value: string) => void;
 }
 
-export default function IdentificationDocumentsCard({ documents, isReadOnly, onFileChange }: IdentificationDocumentsCardProps) {
+export default function IdentificationDocumentsCard({ ssn, ein, isReadOnly, onUpdate }: IdentificationDocumentsCardProps) {
   return (
     <Card>
       <Title text="Identification Documents" />
-      <p className="text-sm text-gray-600 mb-4">At least one of passport, national ID card, or driver's license is required.</p>
+      <p className="text-sm text-gray-600 mb-4">Social Security Number and Employer Identification Number</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            ID / Passport / National ID Card *
-          </label>
-          <input
-            type="file"
-            onChange={(e) => onFileChange('id', e.target.files?.[0] || null)}
-            disabled={isReadOnly}
-            accept="image/*,.pdf"
-            className="w-full px-4 py-2.5 border bg-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring-focus"
-          />
-          {documents.id && (
-            <p className="text-sm text-gray-600 mt-1">
-              {typeof documents.id === 'string'
-                ? documents.id
-                : documents.id.name}
-            </p>
-          )}
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Driver License
-          </label>
-          <input
-            type="file"
-            onChange={(e) => onFileChange('driverLicense', e.target.files?.[0] || null)}
-            disabled={isReadOnly}
-            accept="image/*,.pdf"
-            className="w-full px-4 py-2.5 border bg-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring-focus"
-          />
-          {documents.driverLicense && (
-            <p className="text-sm text-gray-600 mt-1">
-              {typeof documents.driverLicense === 'string'
-                ? documents.driverLicense
-                : documents.driverLicense.name}
-            </p>
-          )}
-        </div>
+        <Input
+          label="Social Security Number (SSN) *"
+          value={ssn}
+          onChange={(e) => onUpdate('ssn', e.target.value)}
+          disabled={isReadOnly}
+          required
+          placeholder="XXX-XX-XXXX"
+        />
+        <Input
+          label="Employer Identification Number (EIN) *"
+          value={ein}
+          onChange={(e) => onUpdate('ein', e.target.value)}
+          disabled={isReadOnly}
+          required
+          placeholder="XX-XXXXXXX"
+        />
       </div>
     </Card>
   );

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { getUserProfile, login as loginApi } from './apis';
-import type { User } from './types';
+import type { User } from '../../types/user';
 import { toast } from 'react-toastify';
 
 export const useAuthStore = create<AuthState>()(
@@ -21,6 +21,7 @@ export const useAuthStore = create<AuthState>()(
           //get the role
           const profile = await getUserProfile(user.accessToken);
           user = { ...user, ...profile };
+          console.log('Logged in user:', user);
           set({
             user,
             isLoading: false,
@@ -46,10 +47,7 @@ export const useAuthStore = create<AuthState>()(
         if (expiresDate < new Date()) {
           console.log('Token expired at:', expiresDate);
           if (needToast) {
-            setTimeout(() => {
-              console.log('Showing token expired toast');
-              toast.info('Token expired. Please log in again.');
-            }, 0);
+            toast.info('Token expired. Please log in again.');
           }
           return false;
         }

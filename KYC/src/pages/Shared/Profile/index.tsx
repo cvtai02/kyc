@@ -1,9 +1,8 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../../hooks/useAuthStore';
-import Card from '../../../components/card';
 import Button from '../../../components/button';
-import type { ProfileData, Email, Phone, Address, Employment } from './types';
+import type { User } from './types';
 import Loader from '@/components/loader/input';
 import { appLazy } from '@/pages/shared/systems/appLazy';
 
@@ -18,164 +17,62 @@ const EmploymentCard = appLazy(() => import('./components/EmploymentCard'));
 export default function Profile() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const isOfficer = user?.role === 'officer';
+  const isUser = user?.role === 'user';
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const [profileData, setProfileData] = useState<ProfileData>({
-    basicInformation: {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      dateOfBirth: '',
-      age: 0,
-    },
-    emails: [{ email: '', type: 'Personal', preferred: true }],
-    phones: [{ number: '', type: 'Personal', preferred: true }],
-    addresses: [{ country: '', city: '', street: '', postalCode: '', type: 'Mailing' }],
-    identificationDocuments: {},
-    employments: [],
-  });
+  const [profileData, setProfileData] = useState<User | null>(user);
 
-  // Calculate age from date of birth
-  const calculateAge = (dob: string): number => {
-    if (!dob) return 0;
-    const [day, month, year] = dob.split('/').map(Number);
-    const birthDate = new Date(year, month - 1, day);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
+  const handleBasicInfoChange = (field: string, value: string | number) => {
+    if (!profileData) return;
+    setProfileData((prev) => ({
+      ...prev!,
+      [field]: value,
+    }));
   };
 
-  // Update age when date of birth changes
-  useEffect(() => {
-    const age = calculateAge(profileData.basicInformation.dateOfBirth);
+  const updateEmail = (value: string) => {
+    if (!profileData) return;
     setProfileData((prev) => ({
-      ...prev,
-      basicInformation: {
-        ...prev.basicInformation,
-        age,
-      },
+      ...prev!,
+      email: value,
     }));
-  }, [profileData.basicInformation.dateOfBirth]);
+  };
 
-  const handleBasicInfoChange = (field: string, value: string) => {
+  const updatePhone = (value: string) => {
+    if (!profileData) return;
     setProfileData((prev) => ({
-      ...prev,
-      basicInformation: {
-        ...prev.basicInformation,
+      ...prev!,
+      phone: value,
+    }));
+  };
+
+  const updateAddress = (field: string, value: string | number) => {
+    if (!profileData) return;
+    setProfileData((prev) => ({
+      ...prev!,
+      address: {
+        ...prev!.address,
         [field]: value,
       },
     }));
   };
 
-  // Email handlers
-  const addEmail = () => {
+  const updateEmployment = (field: string, value: string) => {
+    if (!profileData) return;
     setProfileData((prev) => ({
-      ...prev,
-      emails: [...prev.emails, { email: '', type: 'Personal', preferred: false }],
-    }));
-  };
-
-  const removeEmail = (index: number) => {
-    setProfileData((prev) => ({
-      ...prev,
-      emails: prev.emails.filter((_, i) => i !== index),
-    }));
-  };
-
-  const updateEmail = (index: number, field: keyof Email, value: string | boolean) => {
-    setProfileData((prev) => ({
-      ...prev,
-      emails: prev.emails.map((email, i) =>
-        i === index ? { ...email, [field]: value } : email
-      ),
-    }));
-  };
-
-  // Phone handlers
-  const addPhone = () => {
-    setProfileData((prev) => ({
-      ...prev,
-      phones: [...prev.phones, { number: '', type: 'Personal', preferred: false }],
-    }));
-  };
-
-  const removePhone = (index: number) => {
-    setProfileData((prev) => ({
-      ...prev,
-      phones: prev.phones.filter((_, i) => i !== index),
-    }));
-  };
-
-  const updatePhone = (index: number, field: keyof Phone, value: string | boolean) => {
-    setProfileData((prev) => ({
-      ...prev,
-      phones: prev.phones.map((phone, i) =>
-        i === index ? { ...phone, [field]: value } : phone
-      ),
-    }));
-  };
-
-  // Address handlers
-  const addAddress = () => {
-    setProfileData((prev) => ({
-      ...prev,
-      addresses: [...prev.addresses, { country: '', city: '', street: '', postalCode: '', type: 'Mailing' }],
-    }));
-  };
-
-  const removeAddress = (index: number) => {
-    setProfileData((prev) => ({
-      ...prev,
-      addresses: prev.addresses.filter((_, i) => i !== index),
-    }));
-  };
-
-  const updateAddress = (index: number, field: keyof Address, value: string) => {
-    setProfileData((prev) => ({
-      ...prev,
-      addresses: prev.addresses.map((address, i) =>
-        i === index ? { ...address, [field]: value } : address
-      ),
-    }));
-  };
-
-  // Employment handlers
-  const addEmployment = () => {
-    setProfileData((prev) => ({
-      ...prev,
-      employments: [...prev.employments, { name: '', fromYear: new Date().getFullYear(), toYear: undefined }],
-    }));
-  };
-
-  const removeEmployment = (index: number) => {
-    setProfileData((prev) => ({
-      ...prev,
-      employments: prev.employments.filter((_, i) => i !== index),
-    }));
-  };
-
-  const updateEmployment = (index: number, field: keyof Employment, value: string | number) => {
-    setProfileData((prev) => ({
-      ...prev,
-      employments: prev.employments.map((employment, i) =>
-        i === index ? { ...employment, [field]: value } : employment
-      ),
-    }));
-  };
-
-  // File upload handlers
-  const handleFileChange = (field: 'id' | 'driverLicense', file: File | null) => {
-    setProfileData((prev) => ({
-      ...prev,
-      identificationDocuments: {
-        ...prev.identificationDocuments,
-        [field]: file || undefined,
+      ...prev!,
+      company: {
+        ...prev!.company,
+        [field]: value,
       },
+    }));
+  };
+
+  const updateIdentification = (field: string, value: string) => {
+    if (!profileData) return;
+    setProfileData((prev) => ({
+      ...prev!,
+      [field]: value,
     }));
   };
 
@@ -198,13 +95,17 @@ export default function Profile() {
     navigate('/kyc');
   };
 
-  const isReadOnly = isOfficer || !isEditMode;
+  const isReadOnly = !isUser || !isEditMode;
+
+  if (!profileData) {
+    return <div className="container mx-auto p-6 max-w-6xl">Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6 flex justify-between items-center">
         <h1 className="text-3xl font-bold">Profile</h1>
-        {!isOfficer && (
+        {isUser && (
           <div className="flex gap-3">
             {isEditMode ? (
               <>
@@ -232,50 +133,43 @@ export default function Profile() {
       <div className="gap-4 flex flex-col">
         <Suspense fallback={<Loader />}>
           <BasicInformationCard
-            data={profileData.basicInformation}
+            data={profileData}
             isReadOnly={isReadOnly}
             onChange={handleBasicInfoChange}
           />
 
           {/* Contact Information - Emails */}
           <EmailsCard
-            emails={profileData.emails}
+            email={profileData.email}
             isReadOnly={isReadOnly}
-            onAdd={addEmail}
-            onRemove={removeEmail}
             onUpdate={updateEmail}
           />
 
           {/* Contact Information - Phones */}
           <PhonesCard
-            phones={profileData.phones}
+            phone={profileData.phone}
             isReadOnly={isReadOnly}
-            onAdd={addPhone}
-            onRemove={removePhone}
             onUpdate={updatePhone}
           />
 
           {/* Addresses */}
           <AddressesCard
-            addresses={profileData.addresses}
+            address={profileData.address}
             isReadOnly={isReadOnly}
-            onAdd={addAddress}
-            onRemove={removeAddress}
             onUpdate={updateAddress}
           />
           {/* Identification Documents */}
           <IdentificationDocumentsCard
-            documents={profileData.identificationDocuments}
+            ssn={profileData.ssn}
+            ein={profileData.ein}
             isReadOnly={isReadOnly}
-            onFileChange={handleFileChange}
+            onUpdate={updateIdentification}
           />
 
           {/* Employment Information */}
           <EmploymentCard
-            employments={profileData.employments}
+            company={profileData.company}
             isReadOnly={isReadOnly}
-            onAdd={addEmployment}
-            onRemove={removeEmployment}
             onUpdate={updateEmployment}
           />
         </Suspense>

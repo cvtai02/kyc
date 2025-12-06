@@ -15,7 +15,7 @@ export default function Title({ text, className = '', variant = 'default' }: Tit
     }
 
     return (
-        <h1 className={`text-left font-bold mb-4 ${variantClass} ${className}`}>
+        <h1 className={`text-left mb-4 font-bold ${variantClass} ${className}`}>
             {text}
         </h1>
     );

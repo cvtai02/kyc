@@ -1,4 +1,4 @@
-import type { User } from './types';
+import type { User } from '../../types/user';
 import { API_BASE_URL, TOKEN_EXPIRE_THRESHOLD_MINS } from '../../base/constants';
 import { appFetch } from '@/base/appFetch';
 

@@ -45,6 +45,10 @@ export default function Login() {
 
   return (
     <div className="bg-muted flex gap-10 flex-col items-center justify-center min-h-screen">
+      <ul className="top-8 left-8 absolute text-gray-600 text-left mb-2">
+        <li> <strong>officer: michaelw/michaelwpass</strong></li>
+        <li> <strong>user: abigailr/abigailrpass</strong></li>
+      </ul>
       <Logo size='lg' text="Simple KYC Authentication" />
       <Card className="max-w-xl">
         <form onSubmit={handleSubmit((x) => mutate(x))}>
@@ -65,7 +69,7 @@ export default function Login() {
               })}
               errorMessage={errors.username?.message}
               placeholder="Enter your username"
-              defaultValue="michaelw"
+              defaultValue="abigailr"
             />
           </div>
 
@@ -90,7 +94,7 @@ export default function Login() {
               })}
               errorMessage={errors.password?.message}
               placeholder="Enter your password"
-              defaultValue="michaelwpass"
+              defaultValue="abigailrpass"
             />
           </div>
 

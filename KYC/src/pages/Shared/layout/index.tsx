@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import Logo from '@/components/logo';
 import { IoIosNotifications } from 'react-icons/io';
-import { RiFunctionFill } from 'react-icons/ri';
+import { RiCustomerServiceFill, RiFunctionFill } from 'react-icons/ri';
 import { IoMoonSharp, IoSettings } from 'react-icons/io5';
 import { useState } from 'react';
 
@@ -45,18 +45,18 @@ export default function Layout() {
                     className="absolute right-0 top-full pt-2 w-48 z-10"
                   >
                     <div className="bg-white rounded-md shadow-lg py-1 border border-gray-200">
-                      <button
+                      <Link
+                        to="/profile"
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => window.location.href = '/profile'}
                       >
                         Profile
-                      </button>
-                      <button
+                      </Link>
+                      <Link
+                        to="/settings"
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => window.location.href = '/settings'}
                       >
                         Settings
-                      </button>
+                      </Link>
                       <hr className="my-1" />
                       <button
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
@@ -77,13 +77,22 @@ export default function Layout() {
         <aside className="w-64 bg-white shadow-md min-h-[calc(100vh-4rem)]">
           <nav className="mt-6">
             <Link 
-              to="" 
+              to="profile" 
               className={`flex items-center gap-3 px-6 py-3 text-secondary hover:bg-blue-50 hover:text-highlight transition-colors ${
                 isActive('/dashboard') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
               }`}
             >
               <IoSettings size={20} />
-              <span className="font-medium">Example</span>
+              <span className="font-medium">Profile</span>
+            </Link>
+            <Link 
+              to="kyc" 
+              className={`flex items-center gap-3 px-6 py-3 text-secondary hover:bg-blue-50 hover:text-highlight transition-colors ${
+                isActive('/dashboard') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
+              }`}
+            >
+              <RiCustomerServiceFill  size={20} />
+              <span className="font-medium">KYC</span>
             </Link>
          
           </nav>
