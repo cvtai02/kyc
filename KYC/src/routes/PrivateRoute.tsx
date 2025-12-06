@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import useAuth from '@/hooks/useAuthStore';
-import Unauthorize from '@/pages/system/Unauthorize';
+import Unauthorize from '@/pages/shared/systems/Unauthorize';
 import { ROUTES } from '@/routes';
 
 interface PrivateRouteProps {

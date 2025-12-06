@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { login as loginApi } from './apis';
+import { getUserProfile, login as loginApi } from './apis';
 import type { User } from './types';
 import { toast } from 'react-toastify';
 
@@ -9,7 +9,6 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
       isLoading: false,
       isHydrated: false,
 
@@ -18,11 +17,12 @@ export const useAuthStore = create<AuthState>()(
       login: async (username: string, password: string) => {
         set({ isLoading: true });
         try {
-          const { user, token } = await loginApi(username, password);
-          
+          let user = await loginApi(username, password);
+          //get the role
+          const profile = await getUserProfile(user.accessToken);
+          user = { ...user, ...profile };
           set({
             user,
-            token,
             isLoading: false,
           });
         } catch (error) {
@@ -34,11 +34,10 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         set({
           user: null,
-          token: null,
         });
       },
       isAuthenticated: (needToast = false) => {
-        const token = get().token;
+        const token = get().user?.accessToken;
         console.log('Checking authentication with token:', token);
         if (!token) return false;
         // Check if the token is expired
@@ -62,7 +61,6 @@ export const useAuthStore = create<AuthState>()(
       name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
-        token: state.token,
       }),
     }
   )
@@ -72,7 +70,6 @@ export default useAuthStore;
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;

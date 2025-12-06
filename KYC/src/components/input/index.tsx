@@ -2,11 +2,11 @@ import type { InputHTMLAttributes, Ref } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
-  error?: string;
+  errorMessage?: string;
   ref?: Ref<HTMLInputElement>;
 }
 
-const Input = ({ label, error, className = '', id, ref, ...props }: InputProps) => {
+const Input = ({ label, errorMessage, className = '', id, ref, ...props }: InputProps) => {
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
   const widthStyle = 'w-full';
 
@@ -23,12 +23,12 @@ const Input = ({ label, error, className = '', id, ref, ...props }: InputProps) 
       <input
         ref={ref}
         id={inputId}
-        className={`${widthStyle} px-4 py-2.5 border bg-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring-focus focus:border-transparent ${error ? 'border-red-500 focus:ring-red-500' : ''
+        className={`${widthStyle} px-4 py-2.5 border bg-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring-focus focus:border-transparent ${errorMessage ? 'border-red-500 focus:ring-red-500' : ''
           } ${className}`}
         {...props}
       />
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+      {errorMessage && (
+        <p className="mt-1 text-sm text-red-600">{errorMessage}</p>
       )}
     </div>
   );

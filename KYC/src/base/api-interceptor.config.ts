@@ -6,7 +6,7 @@ import { ApiError } from "@/base/appFetch";
 export const API_INTERCEPTOR_CONFIG = {
     headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('accessToken') }`,
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('auth-storage') || '{}').state?.token || ''}`,
     },
     clientErrors: {
         default: 'An error occurred. Please try again.',

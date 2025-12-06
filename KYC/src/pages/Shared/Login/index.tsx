@@ -9,6 +9,7 @@ import Button from '@/components/button';
 import { useEffect } from 'react';
 import Title from '@/components/title';
 import Logo from '@/components/logo';
+import Card from '@/components/card';
 
 interface LoginFormData {
   username: string;
@@ -45,7 +46,7 @@ export default function Login() {
   return (
     <div className="bg-muted flex gap-10 flex-col items-center justify-center min-h-screen">
       <Logo size='lg' text="Simple KYC Authentication" />
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+      <Card className="max-w-xl">
         <form onSubmit={handleSubmit((x) => mutate(x))}>
           <Title text="Sign in to platform" variant="large"  />
           <div className="mb-4">
@@ -62,7 +63,7 @@ export default function Login() {
                   message: 'Username must be between 8 and 10 characters',
                 },
               })}
-              error={errors.username?.message}
+              errorMessage={errors.username?.message}
               placeholder="Enter your username"
               defaultValue="michaelw"
             />
@@ -87,7 +88,7 @@ export default function Login() {
                   message: 'Password only accepts letters, numbers, and these special characters (@, #, &, !)',
                 },
               })}
-              error={errors.password?.message}
+              errorMessage={errors.password?.message}
               placeholder="Enter your password"
               defaultValue="michaelwpass"
             />
@@ -98,9 +99,9 @@ export default function Login() {
               <input
                 type="checkbox"
                 {...register('rememberMe')}
-                className="form-checkbox h-4 w-4 text-blue-600"
+                className="form-checkbox h-4 w-4"
               />
-              <span className="ml-2 text-sm text-gray-600">Remember me</span>
+              <span className="ml-2 text-sm text-secondary">Remember me</span>
             </label>
             <a href="#" className="text-sm text-link hover:underline">
               Lost password?
@@ -116,11 +117,11 @@ export default function Login() {
           </Button>
         </form>
 
-        <p className="mt-4 text-sm text-center text-gray-600">
+        <p className="mt-4 text-sm text-secondary">
           Don't have an account? {' '}
           <Link to={ROUTES.signup} className="text-link hover:underline">Sign up</Link>
         </p>
-      </div>
+      </Card>
     </div>
   );
 }
