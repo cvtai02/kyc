@@ -1,3 +1,0 @@
-o Code Splitting and Lazy Loading: Use code splitting and lazy loading to improve performance.
-
-o Example: Use React.lazy and Suspense to lazy load components.
