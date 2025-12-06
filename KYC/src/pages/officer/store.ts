@@ -139,7 +139,7 @@ export const useOfficerStore = create<OfficerStore>((set) => ({
       if (!submission) return state;
 
       const newResult: ReviewedResult = {
-        id: `${Date.now()}`,
+        id: submission.id,
         name: submission.name,
         date: new Date().toISOString().split('T')[0],
         finalStatus: 'Approved',
@@ -157,7 +157,7 @@ export const useOfficerStore = create<OfficerStore>((set) => ({
       if (!submission) return state;
 
       const newResult: ReviewedResult = {
-        id: `${Date.now()}`,
+        id: submission.id,
         name: submission.name,
         date: new Date().toISOString().split('T')[0],
         finalStatus: 'Rejected',
