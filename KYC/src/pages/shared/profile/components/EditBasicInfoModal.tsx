@@ -6,7 +6,6 @@ import { API_BASE_URL } from '@/base/constants';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import Modal from '@/components/modal';
 import Input from '@/components/input';
-import Select from '@/components/select';
 import Button from '@/components/button';
 import type { User } from '@/types/user';
 

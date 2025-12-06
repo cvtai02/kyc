@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import Card from '../../../components/card';
 import Title from '../../../components/title';
 import Button from '../../../components/button';
 import ReadonlyTable, { type ColumnDefinition } from '../../../components/readonly-table';
