@@ -612,9 +612,9 @@ export default function Profile() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
-      <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Profile</h1>
+    <div className="mx-auto">
+      <div className="flex justify-between items-center">
+        <Title text="User Profile" variant='large'/>
         {isUser && (
           <div className="flex gap-3">
             <Button onClick={handleNavigateToKYC}>

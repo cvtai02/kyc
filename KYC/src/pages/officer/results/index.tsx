@@ -44,11 +44,9 @@ export default function ResultsPage() {
   ];
 
   return (
-    <div className="container mx-auto p-6">
-      <Card>
+    <div className="mx-auto">
         <Title text="List of Reviewed Results" variant="large" />
         <ReadonlyTable columns={columns} data={results} onRowClick={handleRowClick} />
-      </Card>
     </div>
   );
 }

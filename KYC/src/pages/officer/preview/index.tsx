@@ -13,11 +13,13 @@ export default function PreviewPage() {
     navigate(`/profile?id=${row.id}`);
   };
 
-  const handleApprove = (id: string) => {
+  const handleApprove = (id: string, event: React.MouseEvent) => {
+    event.stopPropagation();
     approveSubmission(id);
   };
 
-  const handleReject = (id: string) => {
+  const handleReject = (id: string, event: React.MouseEvent) => {
+    event.stopPropagation();
     rejectSubmission(id);
   };
 
@@ -29,11 +31,11 @@ export default function PreviewPage() {
     };
 
     return (
-      <span
-        className={`px-3 py-1 rounded-full text-xs font-medium ${statusStyles[status] || 'bg-gray-100 text-gray-800'}`}
-      >
-        {status}
-      </span>
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${statusStyles[status] || 'bg-gray-100 text-gray-800'}`}
+        >
+          {status}
+        </span>
     );
   };
 
@@ -59,14 +61,14 @@ export default function PreviewPage() {
           <Button
             variant="primary"
             className="!py-1 !px-3 text-sm !bg-green-600 hover:!bg-green-700"
-            onClick={() => handleApprove(row.id)}
+            onClick={(e) => handleApprove(row.id, e)}
           >
             Approve
           </Button>
           <Button
             variant="primary"
             className="!py-1 !px-3 text-sm !bg-red-600 hover:!bg-red-700"
-            onClick={() => handleReject(row.id)}
+            onClick={(e) => handleReject(row.id, e)}
           >
             Reject
           </Button>
@@ -76,11 +78,9 @@ export default function PreviewPage() {
   ];
 
   return (
-    <div className="container mx-auto p-6">
-      <Card>
-        <Title text="KYC Submission" variant="large" />
-        <ReadonlyTable columns={columns} data={submissions} onRowClick={handleRowClick} />
-      </Card>
+    <div className=" mx-auto">
+      <Title text="KYC Submission" variant="large" />
+      <ReadonlyTable columns={columns} data={submissions} onRowClick={handleRowClick} />
     </div>
   );
 }

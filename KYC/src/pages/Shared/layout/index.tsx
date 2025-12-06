@@ -81,7 +81,7 @@ export default function Layout() {
             <Link 
               to="profile" 
               className={`flex items-center gap-3 px-6 py-3 text-secondary hover:bg-blue-50 hover:text-highlight transition-colors ${
-                isActive('/dashboard') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
+                isActive('/profile') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
               }`}
             >
               <IoSettings size={20} />
@@ -90,7 +90,7 @@ export default function Layout() {
             <Link 
               to="kyc" 
               className={`flex items-center gap-3 px-6 py-3 text-secondary hover:bg-blue-50 hover:text-highlight transition-colors ${
-                isActive('/dashboard') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
+                isActive('/kyc') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
               }`}
             >
               <RiCustomerServiceFill  size={20} />
@@ -103,21 +103,21 @@ export default function Layout() {
                 <Link 
                   to="officer/preview"
                   className={`flex items-center gap-3 px-6 py-3 text-secondary hover:bg-blue-50 hover:text-highlight transition-colors ${
-                    isActive('/dashboard') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
+                    isActive('/officer/preview') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
                   }`}
                 >
                   <MdNotificationAdd   size={20} />
-                  <span className="font-medium">Officer Panel</span>
+                  <span className="font-medium">Preview</span>
                 </Link>
 
                 <Link 
                   to="officer/results"
                   className={`flex items-center gap-3 px-6 py-3 text-secondary hover:bg-blue-50 hover:text-highlight transition-colors ${
-                    isActive('/dashboard') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
+                    isActive('/officer/results') ? 'bg-blue-50 text-highlight border-r-4 border-highlight' : ''
                   }`}
                 >
                   <FaClipboardList   size={20} />
-                  <span className="font-medium">Reviewed Results</span>
+                  <span className="font-medium">Results</span>
                 </Link>
                 
                 </>

@@ -21,10 +21,10 @@ export default function ReadonlyTable<T extends Record<string, any>>({
   onRowClick,
 }: ReadonlyTableProps<T>) {
   return (
-    <div className={`w-full overflow-x-auto ${className}`}>
+    <div className={`w-full bg-background shadow-md rounded-xl overflow-x-auto ${className}`}>
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b bg-gray-50">
+          <tr className=" bg-gray-100">
             {columns.map((column) => (
               <th
                 key={column.key}
@@ -39,13 +39,13 @@ export default function ReadonlyTable<T extends Record<string, any>>({
           {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              className={`border-b hover:bg-gray-50 transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}
+              className={`border-b border-gray-300 hover:bg-gray-50 transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}
               onClick={() => onRowClick?.(row)}
             >
               {columns.map((column) => (
                 <td
                   key={column.key}
-                  className={`px-4 py-4 text-sm text-gray-900 ${column.className || ''}`}
+                  className={`px-4 py-4 text-sm text-left  ${column.className || ''}`}
                 >
                   {column.render ? column.render(row) : row[column.key]}
                 </td>

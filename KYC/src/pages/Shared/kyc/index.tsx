@@ -19,6 +19,7 @@ import {
   EditSourceOfWealthModal,
   EditInvestmentExperienceModal,
 } from './components';
+import Loader from '@/components/loader';
 
 // Component Interfaces
 interface PersonalInformationCardProps {
@@ -444,14 +445,12 @@ export default function KYC() {
   const isReadOnly = !isUser;
 
   if (!user) {
-    return <div className="container mx-auto p-6 max-w-6xl">Loading...</div>;
+    return <Loader />;
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">KYC (Know Your Customer)</h1>
-      </div>
+    <div className="mx-auto ">
+      <Title text="Know Your Customer Information" variant='large'/>
 
       <div className="gap-4 flex flex-col">
         {/* Personal Information Section */}
