@@ -48,6 +48,7 @@ export default function Login() {
       <ul className="top-8 left-8 absolute text-gray-600 text-left mb-2">
         <li> <strong>officer: michaelw/michaelwpass</strong></li>
         <li> <strong>user: abigailr/abigailrpass</strong></li>
+        <li> <em>token will expire after 1 minute</em></li>
       </ul>
       <Logo size='lg' text="Simple KYC Authentication" />
       <Card className="max-w-xl">
